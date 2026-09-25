@@ -1,0 +1,36 @@
+=== EtherCAT Master - LICHUAN LC-E Series ===
+Interface : enp2s0
+
+Mode: uji PDO/DC 5000 siklus, 1 ms; control word selalu 0x0000.
+Slave count=1 VendorID=00000766 ProductCode=00000402 DC=1
+Identitas EEPROM: name=EtherCAT Driver revision=00000204
+Request slave 1 addr=0x1001 -> state=0x02: write WKC=0
+SDO 6041:00: TX-WKC=1 RX-WKC=1 reply=6041:00 cmd=4B size=2/2 counter=1/1 OK
+SDO 603F:00: TX-WKC=1 RX-WKC=1 reply=603F:00 cmd=4B size=2/2 counter=2/2 OK
+SDO 6064:00: TX-WKC=1 RX-WKC=1 reply=6064:00 cmd=43 size=4/4 counter=3/3 OK
+SDO 6061:00: TX-WKC=1 RX-WKC=1 reply=6061:00 cmd=4F size=1/1 counter=4/4 OK
+Awal: SW=0000 ERR=0000 posisi=0 mode=0
+SDO 1C12:00: TX-WKC=1 RX-WKC=1 reply=1C12:00 cmd=4F size=1/1 counter=5/5 OK
+SDO 1C12:01: TX-WKC=1 RX-WKC=1 reply=1C12:01 cmd=4B size=2/2 counter=6/6 OK
+SDO 1702:00: TX-WKC=1 RX-WKC=1 reply=1702:00 cmd=4F size=1/1 counter=7/7 OK
+Assignment 1C12 -> PDO 1702: 6 entri aktual
+SDO 1702:01: TX-WKC=1 RX-WKC=1 reply=1702:01 cmd=4B size=2/4 counter=1/1 DITOLAK
+  Mailbox TX (16 byte): 0A 00 00 00 00 13 00 20 40 02 17 01 00 00 00 00
+  Mailbox RX (16 byte): 0A 00 00 00 00 13 00 30 4B 02 17 01 00 00 00 00
+  Index/subindex cocok, tetapi panjang data berbeda; tidak menebak byte yang hilang.
+Gagal baca SDO 1702:01 (ukuran 2, expected 4).
+SDO 1C13:00: TX-WKC=1 RX-WKC=1 reply=1C13:00 cmd=4F size=1/1 counter=2/2 OK
+SDO 1C13:01: TX-WKC=1 RX-WKC=1 reply=1C13:01 cmd=4B size=2/2 counter=3/3 OK
+SDO 1B02:00: TX-WKC=1 RX-WKC=1 reply=1B02:00 cmd=4F size=1/1 counter=4/4 OK
+Assignment 1C13 -> PDO 1B02: 9 entri aktual
+SDO 1B02:01: TX-WKC=1 RX-WKC=1 reply=1B02:01 cmd=4B size=2/4 counter=5/5 DITOLAK
+  Mailbox TX (16 byte): 0A 00 00 00 00 53 00 20 40 02 1B 01 00 00 00 00
+  Mailbox RX (16 byte): 0A 00 00 00 00 53 00 30 4B 02 1B 01 00 00 00 00
+  Index/subindex cocok, tetapi panjang data berbeda; tidak menebak byte yang hilang.
+Gagal baca SDO 1B02:01 (ukuran 2, expected 4).
+Uji belum lulus atau dihentikan.
+Slave 1: state=0x02 ALstatus=0x0000 (No error)
+SYNC0 belum diaktifkan.
+Assignment PDO tidak diubah oleh uji ini.
+Request slave 1 addr=0x1001 -> state=0x01: write WKC=1
+Selesai; tidak mengirim enable atau fault reset. Hasil=BELUM LULUS

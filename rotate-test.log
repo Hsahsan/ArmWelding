@@ -1,0 +1,128 @@
+=== EtherCAT Master - LICHUAN LC-E Series ===
+Interface : enp2s0
+
+Uji POROS BEBAS: satu gerakan +32768 unit, speed 8192 unit/s, lalu stop dan disable.
+Untuk motor R17 gear 1:1 kira-kira +90 derajat; tidak kembali otomatis.
+Rem harus dilepas dan poros bebas dari mekanisme/beban. Ctrl+C meminta stop.
+Konfirmasi rem: menunggu jawaban operator di terminal input /dev/pts/1 (akhiri dengan Enter).
+
+Operator mengonfirmasi REM LEPAS; melanjutkan mode yang dipilih.
+Mode: uji putar PP terbatas +32768 unit, poros bebas; enable hanya setelah validasi.
+Profil ESI LC10E V1.04: 766/402/204, PDO 1702/1B02, 15/28 byte.
+Slave count=1 VendorID=00000766 ProductCode=00000402 DC=1
+Identitas EEPROM: name=EtherCAT Driver revision=00000204
+Request slave 1 addr=0x1001 -> state=0x02: write WKC=1
+SDO 6041:00: TX-WKC=1 RX-WKC=1 reply=6041:00 cmd=4B size=2/2 counter=1/1 OK
+SDO 603F:00: TX-WKC=1 RX-WKC=1 reply=603F:00 cmd=4B size=2/2 counter=2/2 OK
+SDO 6064:00: TX-WKC=1 RX-WKC=1 reply=6064:00 cmd=43 size=4/4 counter=3/3 OK
+SDO 6061:00: TX-WKC=1 RX-WKC=1 reply=6061:00 cmd=4F size=1/1 counter=4/4 OK
+Awal: SW=0000 ERR=0000 posisi=0 mode=0
+SDO 1C12:00: TX-WKC=1 RX-WKC=1 reply=1C12:00 cmd=4F size=1/1 counter=5/5 OK
+SDO 1C12:01: TX-WKC=1 RX-WKC=1 reply=1C12:01 cmd=4B size=2/2 counter=6/6 OK
+SDO 1702:00: TX-WKC=1 RX-WKC=1 reply=1702:00 cmd=4F size=1/1 counter=7/7 OK
+Assignment 1C12 -> PDO 1702: 6 entri aktual
+  Descriptor bersumber dari LC10E V1.04.xml (fixed PDO).
+  1702:01 = 60400010 -> 6040:00, 16 bit
+  1702:02 = 607A0020 -> 607A:00, 32 bit
+  1702:03 = 60B80010 -> 60B8:00, 16 bit
+  1702:04 = 60710010 -> 6071:00, 16 bit
+  1702:05 = 607F0020 -> 607F:00, 32 bit
+  1702:06 = 60600008 -> 6060:00, 8 bit
+SDO 1C13:00: TX-WKC=1 RX-WKC=1 reply=1C13:00 cmd=4F size=1/1 counter=1/1 OK
+SDO 1C13:01: TX-WKC=1 RX-WKC=1 reply=1C13:01 cmd=4B size=2/2 counter=2/2 OK
+SDO 1B02:00: TX-WKC=1 RX-WKC=1 reply=1B02:00 cmd=4F size=1/1 counter=3/3 OK
+Assignment 1C13 -> PDO 1B02: 9 entri aktual
+  Descriptor bersumber dari LC10E V1.04.xml (fixed PDO).
+  1B02:01 = 603F0010 -> 603F:00, 16 bit
+  1B02:02 = 60410010 -> 6041:00, 16 bit
+  1B02:03 = 60640020 -> 6064:00, 32 bit
+  1B02:04 = 60770010 -> 6077:00, 16 bit
+  1B02:05 = 60F40020 -> 60F4:00, 32 bit
+  1B02:06 = 60B90010 -> 60B9:00, 16 bit
+  1B02:07 = 60BA0020 -> 60BA:00, 32 bit
+  1B02:08 = 60BC0020 -> 60BC:00, 32 bit
+  1B02:09 = 60FD0020 -> 60FD:00, 32 bit
+PDO 1702 tervalidasi: 15 byte.
+PDO 1B02 tervalidasi: 28 byte.
+Assignment aktif dipertahankan; parameter profil PP sementara akan diverifikasi.
+SDO 6060:00: TX-WKC=1 RX-WKC=1 reply=6060:00 cmd=4F size=1/1 counter=4/4 OK
+SDO 607F:00: TX-WKC=1 RX-WKC=1 reply=607F:00 cmd=43 size=4/4 counter=5/5 OK
+SDO 6091:01: TX-WKC=1 RX-WKC=1 reply=6091:01 cmd=43 size=4/4 counter=6/6 OK
+SDO 6091:02: TX-WKC=1 RX-WKC=1 reply=6091:02 cmd=43 size=4/4 counter=7/7 OK
+SDO 60B0:00: TX-WKC=1 RX-WKC=1 reply=60B0:00 cmd=43 size=4/4 counter=1/1 OK
+SDO 607E:00: TX-WKC=1 RX-WKC=1 reply=607E:00 cmd=4F size=1/1 counter=2/2 OK
+SDO 607D:01: TX-WKC=1 RX-WKC=1 reply=607D:01 cmd=43 size=4/4 counter=3/3 OK
+SDO 607D:02: TX-WKC=1 RX-WKC=1 reply=607D:02 cmd=43 size=4/4 counter=4/4 OK
+Uji poros bebas: gear=1/1 offset=0 polarity=00 batas=-2147483648..2147483647
+SDO 6060:00: TX-WKC=1 RX-WKC=1 reply=6060:00 cmd=4F size=1/1 counter=5/5 OK
+SDO 607F:00: TX-WKC=1 RX-WKC=1 reply=607F:00 cmd=43 size=4/4 counter=6/6 OK
+SDO 6081:00: TX-WKC=1 RX-WKC=1 reply=6081:00 cmd=43 size=4/4 counter=7/7 OK
+SDO 6083:00: TX-WKC=1 RX-WKC=1 reply=6083:00 cmd=43 size=4/4 counter=1/1 OK
+SDO 6084:00: TX-WKC=1 RX-WKC=1 reply=6084:00 cmd=43 size=4/4 counter=2/2 OK
+SDO 6085:00: TX-WKC=1 RX-WKC=1 reply=6085:00 cmd=43 size=4/4 counter=3/3 OK
+SDO 605A:00: TX-WKC=1 RX-WKC=1 reply=605A:00 cmd=4B size=2/2 counter=4/4 OK
+SDO 6072:00: TX-WKC=1 RX-WKC=1 reply=6072:00 cmd=4B size=2/2 counter=5/5 OK
+SDO 6060:00: TX-WKC=1 RX-WKC=1 reply=6060:00 cmd=4F size=1/1 counter=7/7 OK
+Parameter 6060: nilai=1 WKC=1 readback=OK
+SDO 607F:00: TX-WKC=1 RX-WKC=1 reply=607F:00 cmd=43 size=4/4 counter=2/2 OK
+Parameter 607F: nilai=8192 WKC=1 readback=OK
+SDO 6081:00: TX-WKC=1 RX-WKC=1 reply=6081:00 cmd=43 size=4/4 counter=4/4 OK
+Parameter 6081: nilai=8192 WKC=1 readback=OK
+SDO 6083:00: TX-WKC=1 RX-WKC=1 reply=6083:00 cmd=43 size=4/4 counter=6/6 OK
+Parameter 6083: nilai=16384 WKC=1 readback=OK
+SDO 6084:00: TX-WKC=1 RX-WKC=1 reply=6084:00 cmd=43 size=4/4 counter=1/1 OK
+Parameter 6084: nilai=16384 WKC=1 readback=OK
+SDO 6085:00: TX-WKC=1 RX-WKC=1 reply=6085:00 cmd=43 size=4/4 counter=3/3 OK
+Parameter 6085: nilai=16384 WKC=1 readback=OK
+SDO 605A:00: TX-WKC=1 RX-WKC=1 reply=605A:00 cmd=4B size=2/2 counter=5/5 OK
+Parameter 605A: nilai=2 WKC=1 readback=OK
+SDO 6072:00: TX-WKC=1 RX-WKC=1 reply=6072:00 cmd=4B size=2/2 counter=7/7 OK
+Parameter 6072: nilai=200 WKC=1 readback=OK
+SOEM config_map: Output=15 Input=28 byte
+IOmap: total=44 expected=44; PDO=43 mailbox-status=1 expected=1
+  Slave: O/I bytes=15/28 bits=120/224 startbit=0/0 offset=0/15
+  Group: O/I bytes=15/28 offset=0/15; mailbox offset group/slave=43/43
+SM2 readback: alamat=1200 ukuran=15 control=64 OK
+SM3 readback: alamat=1300 ukuran=28 control=20 OK
+SDO 1C12:00: TX-WKC=1 RX-WKC=1 reply=1C12:00 cmd=4F size=1/1 counter=1/1 OK
+SDO 1C12:01: TX-WKC=1 RX-WKC=1 reply=1C12:01 cmd=4B size=2/2 counter=2/2 OK
+SDO 1702:00: TX-WKC=1 RX-WKC=1 reply=1702:00 cmd=4F size=1/1 counter=3/3 OK
+SDO 1C13:00: TX-WKC=1 RX-WKC=1 reply=1C13:00 cmd=4F size=1/1 counter=4/4 OK
+SDO 1C13:01: TX-WKC=1 RX-WKC=1 reply=1C13:01 cmd=4B size=2/2 counter=5/5 OK
+SDO 1B02:00: TX-WKC=1 RX-WKC=1 reply=1B02:00 cmd=4F size=1/1 counter=6/6 OK
+Request slave 1 addr=0x1001 -> state=0x04: write WKC=1
+DC readback: activation=0x03 cycle=1000000 ns (expect 1000000 ns).
+DC SYNC0 aktif: 1000000 ns (readback OK).
+SAFE-OP tercapai; expected WKC=3.
+Request slave 1 addr=0x1001 -> state=0x08: write WKC=1
+EtherCAT OP tercapai; control word tetap 0x0000.
+SDO 6061:00: TX-WKC=1 RX-WKC=1 reply=6061:00 cmd=4F size=1/1 counter=7/7 OK
+Profil PP: awal=46263 target=79031 delta=+32768, speed=8192 unit/s, accel/decel=16384 unit/s2.
+Servo enabled dalam PP; memulai satu gerakan.
+PP: posisi=46263 target=79031 SW=0237 WKC=3/3
+EtherCAT keluar OP; uji dihentikan.
+Mengirim quick stop lalu disable; tidak melakukan re-enable.
+Stop terkonfirmasi=YA; disable/posisi stabil=YA.
+Uji belum lulus atau dihentikan.
+Slave 1: state=0x08 ALstatus=0x0000 (No error)
+Request slave 1 addr=0x1001 -> state=0x02: write WKC=1
+SDO 6072:00: TX-WKC=1 RX-WKC=1 reply=6072:00 cmd=4B size=2/2 counter=2/2 OK
+Parameter 6072: nilai=5000 WKC=1 readback=OK
+SDO 605A:00: TX-WKC=1 RX-WKC=1 reply=605A:00 cmd=4B size=2/2 counter=4/4 OK
+Parameter 605A: nilai=2 WKC=1 readback=OK
+SDO 6085:00: TX-WKC=1 RX-WKC=1 reply=6085:00 cmd=43 size=4/4 counter=6/6 OK
+Parameter 6085: nilai=100000 WKC=1 readback=OK
+SDO 6084:00: TX-WKC=1 RX-WKC=1 reply=6084:00 cmd=43 size=4/4 counter=1/1 OK
+Parameter 6084: nilai=100000 WKC=1 readback=OK
+SDO 6083:00: TX-WKC=1 RX-WKC=1 reply=6083:00 cmd=43 size=4/4 counter=3/3 OK
+Parameter 6083: nilai=100000 WKC=1 readback=OK
+SDO 6081:00: TX-WKC=1 RX-WKC=1 reply=6081:00 cmd=43 size=4/4 counter=5/5 OK
+Parameter 6081: nilai=0 WKC=1 readback=OK
+SDO 607F:00: TX-WKC=1 RX-WKC=1 reply=607F:00 cmd=43 size=4/4 counter=7/7 OK
+Parameter 607F: nilai=104857600 WKC=1 readback=OK
+SDO 6060:00: TX-WKC=1 RX-WKC=1 reply=6060:00 cmd=4F size=1/1 counter=2/2 OK
+Parameter 6060: nilai=0 WKC=1 readback=OK
+Pemulihan parameter awal: OK.
+Assignment PDO tidak diubah oleh uji ini.
+Request slave 1 addr=0x1001 -> state=0x01: write WKC=1
+Selesai uji putar; tanpa fault reset/re-enable. Hasil=BELUM LULUS
