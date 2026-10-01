@@ -16,3 +16,5 @@ cmake_install.cmake
 .idea/
 *.swp
 *~
+_pycache_/
+*.log

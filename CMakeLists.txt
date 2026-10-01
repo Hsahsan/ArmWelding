@@ -29,3 +29,6 @@ add_executable(diagnostic src/diagnostic.cpp src/brake_confirm.cpp)
 
 # Link library yang sama
 target_link_libraries(diagnostic soem pthread rt)
+
+# Offline dual-axis direction/fault behavior test; no SOEM, NIC, or hardware access.
+add_executable(dual_rotate_test tests/dual_rotate_test.cpp)

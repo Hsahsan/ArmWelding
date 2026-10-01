@@ -3,10 +3,10 @@
 
 namespace {
 ecx_contextt *active_context = nullptr;
-std::atomic<bool> used{false};
+std::atomic<int> used_count{0};
 bool supply_mapping(ecx_contextt *ctx, uint16 slave, uint32 *outputs, uint32 *inputs)
 {
-    if (ctx != active_context || slave != 1 || !lc10e_esi::matches(ctx)) return false;
+    if (ctx != active_context || !lc10e_esi::matches_slave(ctx, slave)) return false;
     auto &s = ctx->slavelist[slave];
     // Keep mailbox SMs; configure process SMs from ESI, with activation bit 16.
     for (int i = 2; i < EC_MAXSM; ++i) { s.SM[i] = {}; s.SMtype[i] = 0; }
@@ -20,29 +20,42 @@ bool supply_mapping(ecx_contextt *ctx, uint16 slave, uint32 *outputs, uint32 *in
     s.SMtype[3] = 4;
     *outputs = lc10e_esi::output_bytes * 8;
     *inputs = lc10e_esi::input_bytes * 8;
-    used = true;
+    ++used_count;
     return true;
 }
 }
 
 namespace lc10e_esi {
+bool matches_slave(const ecx_contextt *ctx, uint16 slave)
+{
+    if (!ctx || slave < 1 || slave > ctx->slavecount) return false;
+    const auto &s = ctx->slavelist[slave];
+    return s.eep_man == vendor && s.eep_id == product && s.eep_rev == revision;
+}
+
 bool matches(const ecx_contextt *ctx)
 {
-    const auto &s = ctx->slavelist[1];
-    return ctx->slavecount == 1 && s.eep_man == vendor &&
-           s.eep_id == product && s.eep_rev == revision;
+    if (!ctx || ctx->slavecount < 1) return false;
+    for (int i = 1; i <= ctx->slavecount; ++i) {
+        if (!matches_slave(ctx, i)) return false;
+    }
+    return true;
 }
+
 bool begin_mapping(ecx_contextt *ctx)
 {
     if (active_context || !matches(ctx)) return false;
-    used = false;
+    used_count = 0;
     active_context = ctx;
     return true;
 }
+
 bool end_mapping()
 {
+    const int count = used_count.load();
+    const bool ok = active_context && count == active_context->slavecount;
     active_context = nullptr;
-    return used.load();
+    return ok;
 }
 }
 

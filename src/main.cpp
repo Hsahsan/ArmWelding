@@ -30,6 +30,8 @@
 #include "soem/ec_dc.h"
 #include "osal/osal.h"
 #include "brake_confirm.h"
+#include <vector>
+#include <cstdlib>
 
 /* ───────────────────────────────────────────────────────────────
  * Konstanta CiA402 - Control Word (6040h) - manual Chapter 7.1.1
@@ -117,6 +119,9 @@ static volatile sig_atomic_t g_running = 1;
 
 int check_pdo(const char *ifname, const volatile sig_atomic_t *running, bool use_esi);
 int test_rotate(const char *ifname, const volatile sig_atomic_t *running);
+int monitor_encoders(const char *ifname, const volatile sig_atomic_t *running);
+int dance_trial(const char *ifname, const volatile sig_atomic_t *running);
+int control_interactive(const char *ifname, const volatile sig_atomic_t *running, int initial_rpm);
 
 /* ───────────────────────────────────────────────────────────────
  * Signal handler - Ctrl+C untuk graceful shutdown
@@ -496,20 +501,41 @@ int main(int argc, char *argv[])
     // Show each diagnostic line immediately, including through `2>&1 | tee`.
     setvbuf(stdout, nullptr, _IOLBF, 0);
     // The optional fourth argument adds confirmation to a no-enable test.
-    // Motion mode (no mode argument) always requires confirmation.
     bool ask_brake = false;
-    if (argc >= 3 && strcmp(argv[argc - 1], "--confirm-brake") == 0) {
-        ask_brake = true;
-        --argc;
+    bool force_brake_confirmed = false;
+    int initial_rpm = 25;
+    std::vector<char*> clean_argv;
+    clean_argv.push_back(argv[0]);
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--confirm-brake") == 0) {
+            ask_brake = true;
+        } else if (strcmp(argv[i], "--force-brake-confirmed") == 0) {
+            force_brake_confirmed = true;
+        } else if (strcmp(argv[i], "--rpm") == 0 && i + 1 < argc) {
+            initial_rpm = atoi(argv[++i]);
+            if (initial_rpm < 0) initial_rpm = 0;
+            if (initial_rpm > 3000) initial_rpm = 3000;
+        } else {
+            clean_argv.push_back(argv[i]);
+        }
     }
+    argc = (int)clean_argv.size();
+    for (int i = 0; i < argc; ++i) argv[i] = clean_argv[i];
+
     if (argc < 2 || argc > 3 || argv[1][0] == '-' ||
         (argc == 3 && strcmp(argv[2], "--scan-only") != 0 &&
          strcmp(argv[2], "--check-pdo") != 0 &&
          strcmp(argv[2], "--check-pdo-esi") != 0 &&
-         strcmp(argv[2], "--test-rotate") != 0)) {
-        printf("Penggunaan: sudo %s <interface_jaringan> [--scan-only|--check-pdo|--check-pdo-esi|--test-rotate] [--confirm-brake]\n\n", argv[0]);
-        printf("  Uji PDO dengan konfirmasi rem: sudo %s enp2s0 --check-pdo-esi --confirm-brake\n", argv[0]);
-        printf("  Tanpa opsi mode: program gerak lama, konfirmasi rem wajib.\n\n");
+         strcmp(argv[2], "--test-rotate") != 0 &&
+         strcmp(argv[2], "--test-dual-rotate") != 0 &&
+         strcmp(argv[2], "--dance") != 0 &&
+         strcmp(argv[2], "--monitor") != 0 &&
+         strcmp(argv[2], "--control") != 0)) {
+        printf("Penggunaan: sudo %s <interface_jaringan> [--control|--monitor|--test-rotate|--dance|--scan-only|--check-pdo-esi] [--rpm <RPM>] [--confirm-brake|--force-brake-confirmed]\n\n", argv[0]);
+        printf("  Kontrol interaktif 3-servo (Hold-to-Jog): sudo %s enp2s0 --control [--rpm 25]\n", argv[0]);
+        printf("  Monitor live 3 encoder internal         : sudo %s enp2s0 --monitor\n", argv[0]);
+        printf("  Tarian 8 fase selang-seling             : sudo %s enp2s0 --dance\n", argv[0]);
+        printf("  Uji gerak motor 100 putaran             : sudo %s enp2s0 --test-rotate\n\n", argv[0]);
         printf("Gunakan 'ip link' atau 'ifconfig' untuk melihat nama interface.\n");
         return 1;
     }
@@ -521,20 +547,33 @@ int main(int argc, char *argv[])
     printf("=== EtherCAT Master - LICHUAN LC-E Series ===\n");
     printf("Interface : %s\n\n", argv[1]);
 
-    const bool rotate = argc == 3 && strcmp(argv[2], "--test-rotate") == 0;
-    if (rotate) {
-        printf("Uji POROS BEBAS: satu gerakan +13107200 unit (100 × 360 derajat), speed 1310720 unit/s (~500 RPM), lalu stop dan disable.\n");
-        printf("Untuk motor R17 gear 1:1 kira-kira +36000 derajat (100 putaran penuh); tidak kembali otomatis.\n");
-        printf("Rem harus dilepas dan poros bebas dari mekanisme/beban. Ctrl+C meminta stop.\n");
+    const bool rotate  = argc == 3 && (strcmp(argv[2], "--test-rotate") == 0 ||
+                                      strcmp(argv[2], "--test-dual-rotate") == 0);
+    const bool dance   = argc == 3 && strcmp(argv[2], "--dance") == 0;
+    const bool monitor = argc == 3 && strcmp(argv[2], "--monitor") == 0;
+    const bool control = argc == 3 && strcmp(argv[2], "--control") == 0;
+
+    if (control) {
+        printf("Mode KONTROL INTERAKTIF: 3 Servo siap digerakkan Maju/Mundur via stdin (Hold-to-Jog @ %d RPM).\n", initial_rpm);
+        printf("Kecepatan pelan & aman untuk motor di atas meja tanpa mounting.\n");
+    } else if (rotate || dance) {
+        printf("Uji POROS BEBAS: Rem harus dilepas (PSU 24V) dan poros bebas dari beban. Ctrl+C untuk stop darurat.\n");
+        if (dance) printf("Mode TARIAN: 8 fase gerakan selang-seling @ ~240 RPM (~2 menit).\n");
+        else { printf("Mode Dual-Motor: Slave 1 & Slave 2 bergerak berlawanan arah simultan.\n"); }
+    } else if (monitor) {
+        printf("Mode Monitor: membaca data ketiga encoder secara pasif/real-time; motor tidak di-enable.\n");
     } else if (argc == 2) {
         printf("Mode gerak lama: dapat enable dan menggerakkan motor; mapping belum divalidasi dengan XML.\n");
     } else if (ask_brake) {
         printf("Mode diagnostik: tidak mengaktifkan servo, meskipun rem sudah dilepas.\n");
     }
-    if ((argc == 2 || ask_brake || rotate) && !confirm_brake_released(&g_running)) return 2;
+    if ((argc == 2 || ask_brake || rotate || dance || control) && !force_brake_confirmed && !confirm_brake_released(&g_running)) return 2;
     if (!g_running) return 2;
 
+    if (control) return control_interactive(argv[1], &g_running, initial_rpm);
+    if (dance)  return dance_trial(argv[1], &g_running);
     if (rotate) return test_rotate(argv[1], &g_running);
+    if (monitor) return monitor_encoders(argv[1], &g_running);
 
     if (argc == 3 && (strcmp(argv[2], "--check-pdo") == 0 ||
                       strcmp(argv[2], "--check-pdo-esi") == 0)) {

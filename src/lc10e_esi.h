@@ -16,6 +16,7 @@ inline constexpr uint16 rx_index = 0x1702, tx_index = 0x1b02;
 inline constexpr uint16 output_bytes = 15, input_bytes = 28;
 inline constexpr uint16 output_address = 0x1200, input_address = 0x1300;
 inline constexpr uint32 output_flags = 0x00010064, input_flags = 0x00010020;
+bool matches_slave(const ecx_contextt *ctx, uint16 slave);
 bool matches(const ecx_contextt *ctx);
 // Only used after checking the live assignment/counts. Scope ends after mapping.
 bool begin_mapping(ecx_contextt *ctx);

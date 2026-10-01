@@ -7,7 +7,7 @@
 // One slow, positive point-to-point move. For the user's unloaded R17 motor.
 // XML 1702/1B02 only; offsets below are verified by the shared bus setup.
 class MotionTrial {
-    struct Saved { uint16 index; int size; uint32 value; bool touched = false; };
+    struct Saved { uint16 slave; uint16 index; int size; uint32 value; bool touched = false; };
     std::vector<Saved> saved;
     int32 minimum = 0, maximum = 0;
     int64_t next_tick = 0;
@@ -17,9 +17,13 @@ class MotionTrial {
      * Realtek 8611 kadang drop 1-3 frame berturut-turut; batas 8 cukup. */
     static constexpr int WKC_FAIL_LIMIT = 8;
     int wkc_fail_count_ = 0;
+    bool dance_mode_ = false;
+    bool frame(ecx_contextt *, const uint16 *controls, bool check_fault = true);
     bool frame(ecx_contextt *, uint16 control, bool check_fault = true);
     bool tick(const volatile sig_atomic_t *, bool stop = false);
-    bool set_parameter(ecx_contextt *, uint16 index, uint32 value);
+    bool set_parameter(ecx_contextt *, uint16 slave, uint16 index, uint32 value);
+    bool run_custom(ecx_contextt *, const volatile sig_atomic_t *, const std::vector<int32_t>& dists);
+    bool dance_cycle(ecx_contextt *, const volatile sig_atomic_t *);
 public:
     /* Magnitude gerakan: 100 putaran = 100 × 131072 unit.
      * Arah ditentukan saat run_cycle(): maju (+magnitude) lalu mundur (-magnitude). */
@@ -30,6 +34,7 @@ public:
     static constexpr uint32 speed        = 524288;   /* unit/s ≈ 240 RPM */
     static constexpr uint32 acceleration = 1048576;  /* unit/s² ramp 0.5s */
     bool prepare(ecx_contextt *);
+    void set_dance_mode() { dance_mode_ = true; }
     bool run(ecx_contextt *, const volatile sig_atomic_t *, int32 dist);
     bool run_cycle(ecx_contextt *, const volatile sig_atomic_t *);
     bool stop(ecx_contextt *);
